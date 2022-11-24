@@ -8,59 +8,55 @@
 ############################################################
 
 #Library
-library(sf)
 library(ggplot2)
+library(sf)
+library(tidyverse)
+###############################################    2000    ############################################### 
 
-###############################################    2015    ############################################### 
+## Chandless_State_Park = id 1
+MB_2000 = readr::read_csv("./results/mapbiomas_ppbio_2000.csv") |>
+  dplyr::select(-year) |>
+  dplyr::rename(Classes = class) |> 
+  dplyr::rename(Site = id )
 
-## Dataframe 1
-F_2015 = sf::st_read("./results/2015_global_lulc1km_histo.shp") |>
-  dplyr::as_tibble() |> 
-  dplyr::select(Site, HISTO_1, HISTO_2, HISTO_3, HISTO_4, HISTO_5, HISTO_6) |>
-  dplyr::rename(Water = HISTO_1) |> 
-  dplyr::rename(Forest = HISTO_2) |> 
-  dplyr::rename(Grassland = HISTO_3) |> 
-  dplyr::rename(Barren = HISTO_4) |> 
-  dplyr::rename(Cropland = HISTO_5) |> 
-  dplyr::rename(Urban = HISTO_6) |>
-  tidyr::pivot_longer(-Site, names_to = "Classes", values_to = "Count_2015")  
-
-
-
-
-############################################### SSP5_RCP85 ############################################## 
-###############################################    2030    ############################################### 
-
-F_2030 = sf::st_read("./results/2030_global_lulc1km_histo.shp") |>
-  dplyr::as_tibble() |> 
-  dplyr::select(Site, HISTO_1, HISTO_2, HISTO_3, HISTO_4, HISTO_5, HISTO_6) |>    
-  dplyr::rename(Site_2030 = Site) |> 
-  dplyr::rename(Water = HISTO_1) |> 
-  dplyr::rename(Forest = HISTO_2) |> 
-  dplyr::rename(Grassland = HISTO_3) |> 
-  dplyr::rename(Barren = HISTO_4) |> 
-  dplyr::rename(Cropland = HISTO_5) |> 
-  dplyr::rename(Urban = HISTO_6) |> 
-  tidyr::pivot_longer(-Site_2030, names_to = "Classes_2030", values_to = "Count_2030")
+id_1 = MB_2000 |> 
+  filter(Site == 1) |> 
+  mutate(Classes = factor(Classes, levels = c("3", "4", "11", "12", "15", "33"), 
+                          labels = c("Forest", "Savanna", "Wetland", "Grassland", "Pasture", " River, Lake and Ocean")))
+  
+Chandless_State_Park = ggplot(id_1, aes(x= Classes, y = area))  + 
+  geom_col()
 
 
-###############################################    2040   ############################################### 
+print(Chandless_State_Park + ggtitle("Chandless State Park"))
 
-F_2040 = sf::st_read("./results/2040_global_lulc1km_histo.shp") |>
-  dplyr::as_tibble() |> 
-  dplyr::select(Site, HISTO_1, HISTO_2, HISTO_3, HISTO_4, HISTO_5, HISTO_6) |>   
-  dplyr::rename(Site_2040 = Site) |> 
-  dplyr::rename(Water = HISTO_1) |> 
-  dplyr::rename(Forest = HISTO_2) |> 
-  dplyr::rename(Grassland = HISTO_3) |> 
-  dplyr::rename(Barren = HISTO_4) |> 
-  dplyr::rename(Cropland = HISTO_5) |> 
-  dplyr::rename(Urban = HISTO_6)  |>
-  tidyr::pivot_longer(-Site_2040, names_to = "Classes_2040", values_to = "Count_2040") 
+ 
+###############################################    2010    ############################################### 
+
+MB_2010 = readr::read_csv("./results/mapbiomas_ppbio_2010.csv") |>
+  dplyr::select(-year) |>
+  dplyr::rename(Classes = class) |> 
+  dplyr::rename(Site = id )
+
+###############################################    2020   ############################################### 
+
+MB_2020 = readr::read_csv("./results/mapbiomas_ppbio_2020.csv") |>
+  dplyr::select(-year) |>
+  dplyr::rename(Classes = class) |> 
+  dplyr::rename(Site = id )
+
+###############################################    2021   ############################################### 
+
+MB_2021 = readr::read_csv("./results/mapbiomas_ppbio_2021.csv") |>
+  dplyr::select(-year) |>
+  dplyr::rename(Classes = class) |> 
+  dplyr::rename(Site = id )
 
 ############################################# FUll Bind
 
-full_bind = do.call(cbind, list(F_2015, F_2030, F_2040)) |> 
+
+
+full_bind = dplyr::full_join() |> 
   dplyr::select(Site, Classes, Count_2015, Count_2030, Count_2040 )
 
 
