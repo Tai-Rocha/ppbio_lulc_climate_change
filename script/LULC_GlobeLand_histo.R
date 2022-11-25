@@ -76,15 +76,21 @@ Calc = full_bind  |>
 FUM = Calc |> 
   filter(Site == "Federal University of Amazonas") |> 
   dplyr::select(Classes, Count_2015, Count_2030, Count_2040)|>
+  dplyr::rename("2015" = Count_2015) |>
+  dplyr::rename("2030" = Count_2030) |>
+  dplyr::rename("2040" = Count_2040) |> 
   pivot_longer(-Classes, names_to="variable", values_to="value")
 
 ggplot(FUM,aes(x = Classes,y = value)) + 
   geom_bar(aes(fill = variable),stat = "identity",position = "dodge") + 
-  scale_y_log10()
+  scale_y_log10() +
+  labs(x = "", fill = "Years")
 
-FUMPLOT_ = ggplot(FUM, aes(x= Classes, y = Count_2015))  + 
-  geom_col() +
+FUMPLOT_ = ggplot(FUM,aes(x = Classes,y = value)) + 
+  geom_bar(aes(fill = variable),stat = "identity",position = "dodge") + 
+  scale_y_log10() +
+  labs(x = "", fill = "Years")
   
 
-print(Chandless_State_Park + ggtitle("Chandless State Park"))
+print(FUMPLOT_ + ggtitle("Federal University of Amazonas"))
 
