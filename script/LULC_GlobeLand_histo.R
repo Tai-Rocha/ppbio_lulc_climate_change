@@ -1,5 +1,5 @@
 ###########################################################
-## Script to build histograms 
+## Script to build Graphics 
 ## Author: Tainá Rocha
 ## Data: 23 November 2022 
 ## 4.2.2 R version
@@ -71,3 +71,20 @@ Calc = full_bind  |>
   mutate(Cal_2015_2040 = across(Count_2015) - across(Count_2040)) |> 
   mutate(Cal_2030_2040 = across(Count_2030) - across(Count_2040)) 
   
+######################################### FUM ID ---
+
+FUM = Calc |> 
+  filter(Site == "Federal University of Amazonas") |> 
+  dplyr::select(Classes, Count_2015, Count_2030, Count_2040)|>
+  pivot_longer(-Classes, names_to="variable", values_to="value")
+
+ggplot(FUM,aes(x = Classes,y = value)) + 
+  geom_bar(aes(fill = variable),stat = "identity",position = "dodge") + 
+  scale_y_log10()
+
+FUMPLOT_ = ggplot(FUM, aes(x= Classes, y = Count_2015))  + 
+  geom_col() +
+  
+
+print(Chandless_State_Park + ggtitle("Chandless State Park"))
+
