@@ -11,75 +11,16 @@ library(ggplot2)
 library(sf)
 library(stringr)
 library(tidyverse)
-###############################################    2000    ############################################### 
 
-MB_2000 = readr::read_csv("./results/mapbiomas_ppbio_2000.csv") |>
-  dplyr::select(-year) |>
-  dplyr::rename(Classes = class) |> 
-  dplyr::rename(Site = id )
+###############################################     ############################################### 
 
+## Read  data 
 
-## Chandless_State_Park = id 1
+MB_2000 = readr::read_csv("./data/mapbiomas_2000.csv") 
 
-id_1 = MB_2000 |> 
-  filter(Site == 1) |> 
-  mutate(Classes = factor(Classes, levels = c("3", "4", "11", "12", "15", "33"), 
-                          labels = c("Forest", "Savanna", "Wetland", "Grassland", "Pasture", " River, Lake and Ocean"))) |> 
-  dplyr::select(-Site) |> 
-  pivot_longer(-Classes, names_to="variable", values_to="value")
-  
-Chandless_State_Park = ggplot(id_1, aes(x= Classes, y = area))  + 
-  geom_col()
+MB_2010 = readr::read_csv("./data/mapbiomas_2010.csv") 
 
-
-print(Chandless_State_Park + ggtitle("Chandless State Park"))
-
- 
-###############################################    2010    ############################################### 
-
-MB_2010 = readr::read_csv("./results/mapbiomas_ppbio_2010.csv") |>
-  dplyr::select(-year) |>
-  dplyr::rename(Classes = class) |> 
-  dplyr::rename(Site = id )
-
-###############################################    2020   ############################################### 
-
-MB_2020 = readr::read_csv("./results/mapbiomas_ppbio_2020.csv") |>
-  dplyr::select(-year) |>
-  dplyr::rename(Classes = class) |> 
-  dplyr::rename(Site = id )
-
-###############################################    2021   ############################################### 
-
-MB_2021 = readr::read_csv("./results/mapbiomas_ppbio_2021.csv") |>
-  dplyr::select(-year) |>
-  dplyr::rename(Classes = class) |> 
-  dplyr::rename(Site = id )
-
-############################################# FUll Bind
-
-
-
-full_bind = dplyr::full_join() |> 
-  dplyr::select(Site, Classes, Count_2015, Count_2030, Count_2040 )
-
-
-############################################ Calculation
-
-Calc = full_bind  |> 
-  mutate(Cal_2015_2030 = across(Count_2015) - across(Count_2030)) |> 
-  mutate(Cal_2015_2040 = across(Count_2015) - across(Count_2040)) |> 
-  mutate(Cal_2030_2040 = across(Count_2030) - across(Count_2040)) 
-
-
-
-##### Test
-
-MB_2000 = readr::read_csv("./data-raw/mapbiomas_2000_test.csv") 
-
-MB_2010 = readr::read_csv("./data-raw/mapbiomas_2010_test.csv") 
-
-MB_2020 = readr::read_csv("./data-raw/mapbiomas_2020_test.csv") 
+MB_2020 = readr::read_csv("./data/mapbiomas_2020.csv") 
 
 #full_join = do.call(cbind, list(MB_2000, MB_2010, MB_2020))
 
@@ -96,7 +37,7 @@ Calc = full_bind  |>
 
 ######################################### CSP ID1 
 
-CSP = Calc |> 
+CSP = full_bind |> 
   filter(Id == "1") |> 
   dplyr::select(Class, Area_2000, Area_2010, Area_2020)|>
   mutate(across('Class', str_replace, '3', 'Forest')) |>
@@ -106,16 +47,24 @@ CSP = Calc |>
   mutate(across('Class', str_replace, '15', 'Pasture')) |>
   mutate(across('Class', str_replace, '33', 'River')) |> 
   mutate(across('Class', str_replace, 'Forest3', 'River')) |> 
+  dplyr::rename("2000" = Area_2000) |> 
+  dplyr::rename("2010" = Area_2010) |> 
+  dplyr::rename("2020" = Area_2020) |> 
   pivot_longer(-Class, names_to="variable", values_to="value")
+  
 
 ggplot(CSP,aes(x = Class,y = value)) + 
   geom_bar(aes(fill = variable), stat = "identity", position = "dodge") + 
-  scale_y_log10() 
+  scale_y_log10()  +
+  labs(x = "", fill = "Years")
 
 CSP_ = ggplot(CSP,aes(x = Class,y = value)) + 
   geom_bar(aes(fill = variable), stat = "identity", position = "dodge") + 
-  scale_y_log10()
+  scale_y_log10()  +
+  labs(x = "", fill = "Years")
   
   
 print(CSP_ + ggtitle("Chandless State Park"))
+
+######################################### ID2 
 
