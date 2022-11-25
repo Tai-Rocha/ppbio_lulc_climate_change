@@ -110,7 +110,7 @@ CSP = Calc |>
 
 ggplot(CSP,aes(x = Class,y = value)) + 
   geom_bar(aes(fill = variable), stat = "identity", position = "dodge") + 
-  scale_y_log10()
+  scale_y_log10() 
 
 CSP_ = ggplot(CSP,aes(x = Class,y = value)) + 
   geom_bar(aes(fill = variable), stat = "identity", position = "dodge") + 
