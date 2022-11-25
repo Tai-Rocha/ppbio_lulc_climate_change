@@ -71,7 +71,12 @@ Calc = full_bind  |>
   mutate(Cal_2015_2040 = across(Count_2015) - across(Count_2040)) |> 
   mutate(Cal_2030_2040 = across(Count_2030) - across(Count_2040)) 
   
-######################################### FUM ID ---
+
+############################# Chandless State Park ID1
+
+
+
+######################################### Federal University of Amazonas ID 3
 
 FUM = Calc |> 
   filter(Site == "Federal University of Amazonas") |> 
@@ -93,4 +98,7 @@ FUMPLOT_ = ggplot(FUM,aes(x = Classes,y = value)) +
   
 
 print(FUMPLOT_ + ggtitle("Federal University of Amazonas"))
+
+
+#############################
 

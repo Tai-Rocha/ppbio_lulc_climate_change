@@ -35,7 +35,7 @@ Calc = full_bind  |>
   mutate(Cal_2000_2020 = across(Area_2000) - across(Area_2020)) |> 
   mutate(Cal_2010_2020 = across(Area_2010) - across(Area_2020)) 
 
-######################################### CSP ID1 
+######################################### Chandless State Park ID1 
 
 CSP = full_bind |> 
   filter(Id == "1") |> 
